@@ -91,6 +91,7 @@ class TestEditor(unittest.TestCase):
                 新闻
                     model: News
                     where: 被隐藏的新闻 hidden = 'yes' | 热门新闻 hot=1 and hidden='no'
+                    foreign_input: Peopleid People name select | Bookid Book title autocomplete
         '''
 
         path = '/admin/model/News'
@@ -100,7 +101,15 @@ class TestEditor(unittest.TestCase):
                 hidden=[], new_hidden=[], edit_hidden=[], list_hidden=[], list_btn_hidden=[],
                 only_show=[], new_only_show=[], edit_only_show=[], list_only_show=[], 
                 list_view='', title='', tip='', orderby='', 
-                where=[('被隐藏的新闻',"hidden = 'yes'"), ('热门新闻',"hot=1 and hidden='no'")])
+                foreign_input = {
+                    'Peopleid': {'table_name': 'People', 'text_key': 'name',
+                        'input_type': 'select', 'datas': None},
+                    'Bookid': {'table_name': 'Book', 'text_key': 'title',
+                        'input_type': 'autocomplete', 'datas': None}
+                },
+                where = [('被隐藏的新闻',"hidden = 'yes'"),
+                    ('热门新闻',"hot=1 and hidden='no'")]
+                )
 
         self.assertEqual(e_ctrl.getMenuConfig(menu, path), target)
 

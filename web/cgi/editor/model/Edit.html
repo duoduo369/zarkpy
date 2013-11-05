@@ -4,6 +4,7 @@ $ cn_dict = sh.ctrl('Editor').getChineseColumnName()
 $ page = 'new' if action == 'insert' else 'edit'
 $ hidden = mc[page+'_hidden'] if mc[page+'_hidden'] else mc.hidden
 $ only_show = mc[page+'_only_show'] if mc[page+'_only_show'] else mc.only_show
+$ foreign = mc.get('foreign_input', {})
 $ show_image = ('Imageid' in column_names and column_types['Imageid'].type == 'int' and 'Imageid' not in hidden) and (not only_show or 'Imageid' in only_show)
 
 <form action="/admin/$action?referer=/admin/model/$model_name" enctype="multipart/form-data" method="POST" class="edit_page" >
@@ -49,59 +50,79 @@ $ show_image = ('Imageid' in column_names and column_types['Imageid'].type == 'i
             <!--排除用hidden指定不显示的字段-->
             $if name in hidden: $ continue
 
-            <!--======以下各种类型每个字段仅显示其中一种======-->
 
-            <!--字段名称-->
-            <label>$cn_dict.get(name, name)：</label>
-
-            <!--整数-->
-            $if ct.type == 'int':
-                <input class="span6" type="text" name="$name" value="$value" />
-
-            <!--短字符串-->
-            $if ct.type == 'str':
-                <input class="span6" type="text" name="$name" value="$value" />
-
-            <!--长字符串-->
-            $if ct.type == 'text':
-                $if name in mc.richtext:
-                    <!--富文本-->
-                    <textarea name="$name" rows="30" >$value</textarea>
-                $else:
-                    <!--普通文本-->
-                    <textarea name="$name" class="span6">$value</textarea>
-
-            <!--多项选一-->
-            $if ct.type == 'enum':
-                $for o in ct.options:
-                    $if value:
-                        $ checked = 'checked' if value == o else ''
+            $if foreign.has_key(name):
+                $# select模式的外键输入
+                $ f = foreign[name]
+                <!--字段名称-->
+                <label>$cn_dict.get(f['table_name'], f['table_name'])：</label>
+                $if f['input_type'] == 'select':
+                    $if f['datas'] is None:
+                        $ f['datas'] = sh.model(f['table_name']).all()
+                    $if f['datas']:
+                        <select name="$name" fx="defaultvalue[value=$value]">
+                            $for data in f['datas']:
+                                <option value="$data[name]">$data[f['text_key']]</option>
+                        </select>
                     $else:
-                        $ checked = 'checked' if ct.get('default', None) == o else ''
-                    <label class="radio inline">
-                        <input type="radio" name="$name" value="$o" $checked />$o
-                    </label>
-                <br/>
+                        <p>没有可选数据</p>
 
-            <!--时间-->
-            $if ct.type == 'time':
-                <!--精确到秒-->
-                $if ct.accurate_type in ['datetime', 'timestamp']:
-                    $ fx = 'datetimepicker[style=overcast;changeMonth;changeYear;changeDay;dateFormat=yy-mm-dd;showSecond;]'
-                <!--精确到天-->
-                $if ct.accurate_type == 'date':
-                    $ fx = 'datepicker[style=overcast;changeMonth;changeYear;]'
-                <!--只有小时到秒-->
-                $if ct.accurate_type == 'time':
-                    $ fx = 'datetimepicker[style=overcast;changeMonth;changeYear;changeDay;dateFormat=yy-mm-dd;timeOnly;showSecond;]'
+            $else:
+                $# 不使用外键输入
 
-                <input type="text" name="$name" value="$value" fx="$fx"/>
+                <!--字段名称-->
+                <label>$cn_dict.get(name, name)：</label>
 
-            <!--带点小数-->
-            $if ct.type == 'float':
-                <input type="text" name="$name" value="$value"/>
+                <!--======以下各种类型每个字段仅显示其中一种======-->
 
-            <!--====== End ======-->
+                <!--整数-->
+                $if ct.type == 'int':
+                    <input class="span6" type="text" name="$name" value="$value" />
+
+                <!--短字符串-->
+                $if ct.type == 'str':
+                    <input class="span6" type="text" name="$name" value="$value" />
+
+                <!--长字符串-->
+                $if ct.type == 'text':
+                    $if name in mc.richtext:
+                        <!--富文本-->
+                        <textarea name="$name" rows="30" >$value</textarea>
+                    $else:
+                        <!--普通文本-->
+                        <textarea name="$name" class="span6">$value</textarea>
+
+                <!--多项选一-->
+                $if ct.type == 'enum':
+                    $for o in ct.options:
+                        $if value:
+                            $ checked = 'checked' if value == o else ''
+                        $else:
+                            $ checked = 'checked' if ct.get('default', None) == o else ''
+                        <label class="radio inline">
+                            <input type="radio" name="$name" value="$o" $checked />$o
+                        </label>
+                    <br/>
+
+                <!--时间-->
+                $if ct.type == 'time':
+                    <!--精确到秒-->
+                    $if ct.accurate_type in ['datetime', 'timestamp']:
+                        $ fx = 'datetimepicker[style=overcast;changeMonth;changeYear;changeDay;dateFormat=yy-mm-dd;showSecond;]'
+                    <!--精确到天-->
+                    $if ct.accurate_type == 'date':
+                        $ fx = 'datepicker[style=overcast;changeMonth;changeYear;]'
+                    <!--只有小时到秒-->
+                    $if ct.accurate_type == 'time':
+                        $ fx = 'datetimepicker[style=overcast;changeMonth;changeYear;changeDay;dateFormat=yy-mm-dd;timeOnly;showSecond;]'
+
+                    <input type="text" name="$name" value="$value" fx="$fx"/>
+
+                <!--带点小数-->
+                $if ct.type == 'float':
+                    <input type="text" name="$name" value="$value"/>
+
+                <!--====== 不使用外键输入 End ======-->
 
             <br/>
 

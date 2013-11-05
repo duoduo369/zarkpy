@@ -71,6 +71,7 @@ def initRender():
     from tool import subpage_data
     # 模版文件中可以直接访问的变量
     temp_func = {
+        'eval':         eval,
         'str':          str,
         'int':          int,
         'len':          len,

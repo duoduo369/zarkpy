@@ -9,6 +9,7 @@ class Editor:
     default_menu_config = dict(richtext=[], list_link=[], search=[], layout=[],append_column=[], 
         hidden=[], new_hidden=[], edit_hidden=[], list_hidden=[], list_btn_hidden=[],
         only_show=[], new_only_show=[], edit_only_show=[], list_only_show=[], 
+        foreign_input='',
         list_view='', title='', tip='', orderby='', where='' )
 
     # 根据访问路径path和目录配置，返回此页面的相关配置信息
@@ -58,7 +59,15 @@ class Editor:
                 menu_config.setdefault(k, v)
 
         if menu_config and menu_config.where:
-            menu_config.where = [c.partition(' ')[::2] for c in sh.splitAndStrip(menu_config.where, '|')]
+            menu_config.where = [c.partition(' ')[::2]
+                    for c in sh.splitAndStrip(menu_config.where, '|')]
+
+        if menu_config and menu_config.foreign_input:
+            menu_config.foreign_input = dict([
+                (a, dict(table_name=b, text_key=c, input_type=d, datas=None))
+                for a, b, c, d in [sh.splitAndStrip(i) 
+                    for i in sh.splitAndStrip(menu_config.foreign_input, '|')]
+            ])
 
         return menu_config
 

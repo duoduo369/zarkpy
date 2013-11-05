@@ -33,20 +33,23 @@ $ show_image = 'Imageid' in column_names and 'Imageid' not in hidden and (not on
         <br/>
         <br/>
 
-        <!--用only_show判断是否仅显示部分数据-->
-        $ show_columns = only_show if only_show else [n for n in column_names if n not in ['Imageid'] ]
 
-        <!--根据layout判断是否自定义布局-->
         $if mc.layout:
-            $ show_columns = [c for c in mc.layout if c in show_columns+['|']]
-
+            $# 根据layout判断是否自定义布局
+            $ show_columns = mc.layout
+        $else:
+            $# 用only_show判断是否仅显示部分数据
+            $ show_columns = only_show if only_show else [n for n in column_names if n not in ['Imageid'] ]
         <!--======下面显示除了小图的其它数据======-->
         $for name in show_columns:
             $if name == '|':
                 <br/>
                 $continue
 
-            $ value = item.get(name) if item else ''
+            $if '.' not in name:
+                $ value = item.get(name) if item else ''
+            $else:
+                $ value = eval('item.' + name)
             $ ct = column_types.get(name,  sh.storage({'type':'str'}))
             <!--排除用hidden指定不显示的字段-->
             $if name in hidden: $ continue
