@@ -28,10 +28,6 @@ class TestModel(unittest.TestCase):
         self.assertIsNot(image_model3, image_model)
         image_model4 = sh.model('Image', decorator)
         self.assertIsNot(image_model4, image_model3)
-        # sh.model的decorator参数仅能用于测试环境
-        sh.config.IS_TEST = False
-        self.assertRaises(AssertionError, sh.model, 'Image', decorator)
-        sh.config.IS_TEST = True
 
     def test_get(self):
         id = db.insert('insert into Image (data_name) values (%s)', ('test_image'))

@@ -29,7 +29,7 @@ config = web.Storage({
     'SECRET_KEY' :      'zarkpy',   # 程序密匙,每个新项目务必修改此key
     'HOST_NAME' :       'http://me.zarkpy.com',
     'MAIL_SENDER' :     'noreply@zarkpy.com', # 邮件的默认发送者
-    'IS_TEST' :       False, # 是否正在测试，测试时会被修改为True
+    'IS_TEST' :         False, # 测试时改为True，请勿修改此值
     'MODIFY_TIME_LIMIT' :    3600, # 发布内容后可修改时限
 })
 

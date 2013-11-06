@@ -335,7 +335,6 @@ class Model:
 # 还可以通过后缀s访问一对多的数据,比如如果Comment表有一个Bookid属性
 # 那么可以通过b.comments来获得这本书的所有评论
 class ModelData(web.Storage):
-    db = DBHelper.DBHelper()
     model_names = {} # 在__init__文件中记录所有model的小写到大写的关系
 
     def __init__(self, data, model):
@@ -349,6 +348,7 @@ class ModelData(web.Storage):
         self._column_names = model.column_names
 
     def __getattr__(self, key):
+        db = DBHelper.DBHelper()
         try:
             if key == 'id': key = self._primary_key
             return web.Storage.__getattr__(self, key)
@@ -367,7 +367,7 @@ class ModelData(web.Storage):
                 model_name = ModelData.model_names[key[:-1]]
                 table_name = model_name.rpartition('.')[2]
                 id_key = self.get('_table_name') + 'id'
-                if self.db.isColumnExists(table_name, id_key):
+                if db.isColumnExists(table_name, id_key):
                     try:
                         return sh.model(model_name).all({'where': [id_key + '=%s', self.id]})
                     except:

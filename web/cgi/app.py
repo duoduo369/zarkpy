@@ -110,8 +110,8 @@ initSession()
 initRender()
 
 import processor
-def addProcessor():
-    # 上面的先运行
+# 添加 processor，上面的先运行
+if not sh.config.IS_TEST:
     app.add_processor(processor.profiler.profiler)
     app.add_processor(processor.auto_login.loginByCookie) # 应该放到validate的前面
     app.add_processor(processor.validate.validate)
@@ -119,8 +119,6 @@ def addProcessor():
     app.add_processor(processor.file_version.appendVersionNum)
 
 # 仅headers processor用于测试环境
-if not sh.config.IS_TEST:
-    addProcessor()
 app.add_processor(processor.headers.appendHeader)
 
 if __name__ == "__main__":
