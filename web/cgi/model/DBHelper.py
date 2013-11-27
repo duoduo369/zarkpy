@@ -6,14 +6,14 @@ import site_helper as sh
 def _exceptMySQLdbException(e):
     if len(e.args) > 0:
         if e.args[0] in [1044, 1045]:
-            print 'ERROR: 没有访问数据库%s的权限,请检查sh.config中的数据库配置是否正确' % DB_DATABASE
+            print 'ERROR: 没有访问数据库%s的权限,请检查sh.config中的数据库配置是否正确' % sh.config.DB_DATABASE
             print '或者使用 mysql -uroot -p < %sdoc/sql/init_database.sql 来初始化数据库' % sh.config.APP_ROOT_PATH
             exit(1)
         elif e.args[0] == 1049:
-            print 'ERROR: 数据库%s不存在,请检查sh.config中的数据库配置是否正确' % DB_DATABASE
+            print 'ERROR: 数据库%s不存在,请检查sh.config中的数据库配置是否正确' % sh.config.DB_DATABASE
             exit(1)
         elif e.args[0] == 2003:
-            print 'ERROR: 找不到数据库服务器%s,请检查sh.config中的数据库配置是否正确' % DB_HOST
+            print 'ERROR: 找不到数据库服务器%s,请检查sh.config中的数据库配置是否正确' % sh.config.DB_HOST
             exit(1)
 
 def createDictDB():

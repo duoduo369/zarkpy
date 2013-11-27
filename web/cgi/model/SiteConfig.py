@@ -15,6 +15,7 @@ class SiteConfig(Model):
     column_names = ['name', 'value', 'title', ]
     decorator = [
         ('Pagination', dict(paging_key='page_num', paging_volume=1000, paging=False) ),
+        ('StringProcess', dict(strip=['name']) ),
     ]
 
     table_template = \

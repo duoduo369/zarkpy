@@ -4,7 +4,7 @@ $ cn_dict = sh.ctrl('Editor').getChineseColumnName()
 $ page = 'new' if action == 'insert' else 'edit'
 $ hidden = mc[page+'_hidden'] if mc[page+'_hidden'] else mc.hidden
 $ only_show = mc[page+'_only_show'] if mc[page+'_only_show'] else mc.only_show
-$ foreign = mc.get('foreign_input', {})
+$ foreign = mc.foreign_input if mc.get('foreign_input', '') else {}
 $ show_image = ('Imageid' in column_names and column_types['Imageid'].type == 'int' and 'Imageid' not in hidden) and (not only_show or 'Imageid' in only_show)
 
 <form action="/admin/$action?referer=/admin/model/$model_name" enctype="multipart/form-data" method="POST" class="edit_page" >

@@ -75,7 +75,7 @@ $ show_image = 'Imageid' in column_names and 'Imageid' not in hidden and (not on
             </div>
 
         <!--检查是否使用了Category, 显示Category-->
-        $if hasattr(sh.model(model_name), 'getAllCategory'):
+        $if not mc.layout and hasattr(sh.model(model_name), 'getAllCategory'):
             <br/>
             <div class="info_control info_inline">
                 <label class="muted" >分类：</label>

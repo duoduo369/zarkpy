@@ -26,7 +26,7 @@ assert sh.config.HOST_NAME == 'http://me.zarkpy.com', u'只能在开发环境中
 # 如果万一不小心没有把sh.config.IS_TEST改为True，就会删除正式数据
 # 为了避免意外删除正式数据库，除此函数外应该不允许修改sh.config.IS_TEST
 def modifyConfigForTest():
-    sh.config.IS_TEST = True 
+    sh.config.IS_TEST = True
     for k in TEST_PATH + TEST_URL:
         sh.config[k] = sh.config[k].rstrip('/') + '-testing/'
     sh.config.DB_DATABASE += '_test'

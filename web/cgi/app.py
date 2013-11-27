@@ -130,5 +130,5 @@ if __name__ == "__main__":
         app.run()
     finally:
         db = sh.getDBHelper()
-        db.db_dict.close()
-        db.db_tuple.close()
+        db.DB_DICT.close()
+        db.DB_TUPLE.close()

@@ -20,9 +20,9 @@ config = web.Storage({
     'DB_TIMEOUT' : 800 * 3600,   # 连接超时时间, 默认800小时
     'DB_CHARSET' : 'utf8',
     'UPLOAD_IMAGE_PATH' : '/opt/zarkpy/web/img/upload/', # 上传图片存放目录
-    'UPLOAD_IMAGE_URL'  : '/img/upload/', # 访问上传图片的相对路径
+    'UPLOAD_IMAGE_URL'  : '/img/upload/', # 访问上传图片的路径
     'USER_IMAGE_PATH' : '/opt/zarkpy/web/img/user/userupload/', # 用户上传图片存放目录
-    'USER_IMAGE_URL'  : '/img/user/userupload/', # 访问用户上传图片的相对路径
+    'USER_IMAGE_URL'  : '/img/user/userupload/', # 访问用户上传图片的路径
     # 程序异常log,小心,如果有太多的error的话可能会导致写日志的锁等待,导致程序响应慢
     'ERROR_LOG_PATH' :  '/opt/zarkpy/log/error.log',
     'FOOT_LOG_PATH' :   '',   # 访问log, 一般情况下可以不使用
@@ -357,7 +357,7 @@ def inputs():
     def __processImageFile(inputs):
         if inputs.has_key('image_file'):
             image_file = inputs.image_file
-            if isinstance(image_file, str) or isinstance(image_file, dict) or not image_file.filename \
+            if isinstance(image_file, (str, dict)) or not image_file.filename \
                 or len(image_file.value) < 10 or not image_file.type.startswith('image/'):
                 del inputs.image_file
             else:
